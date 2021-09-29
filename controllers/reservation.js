@@ -1,7 +1,7 @@
 const reservations = require("../models").Reservation;
 
 class Reservation {
-  static async create(req, res) {
+  static async makeReservation(req, res) {
     const { numberRoom, checkIn, checkOut } = req.body;
     if (!numberRoom || !checkIn || !checkOut) {
       res.status(400).json({
@@ -33,3 +33,5 @@ class Reservation {
     }
   }
 }
+
+module.exports = Reservation;
