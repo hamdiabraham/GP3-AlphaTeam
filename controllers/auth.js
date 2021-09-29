@@ -71,7 +71,7 @@ class Auth {
         const user = await users.create({
           name,
           email,
-          password
+          password: bcrypt.hashSync(password)
         });
         res.status(201).json({
           message: "success register",
