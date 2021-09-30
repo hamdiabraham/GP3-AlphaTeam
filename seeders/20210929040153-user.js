@@ -19,8 +19,8 @@ module.exports = {
         email: "admin@alpha.com",
         password: bcrypt.hashSync("adminalpha", 8),
         is_guest: false,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        created_at: new Date(),
+        updated_at: new Date()
       }
     ]);
   },
