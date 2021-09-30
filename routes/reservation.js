@@ -8,5 +8,9 @@ reservationRouter.patch(
   "/reservation/:id",
   reservationController.updateReservation
 );
+reservationRouter.delete(
+  "/reservation/:id",
+  reservationController.deleteReservation
+);
 
 module.exports = reservationRouter;

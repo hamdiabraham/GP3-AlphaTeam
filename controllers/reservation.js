@@ -36,15 +36,17 @@ class Reservation {
 
   static async readAll(req, res) {
     let reservationAll = await reservations.findAll();
-    if (!reservationAll) {
+    reservationAll = reservationAll
+      ? reservationAll.filter(item => !item.is_deleted)
+      : [];
+    if (!reservationAll.length) {
       res.status(404).json({
         message: "reservations empty"
       });
     } else {
-      reservationAll = reservationAll.filter(item => !item.is_deleted);
       res.status(200).json({
         message: "success getting all reservation",
-        reservationAll
+        reservations: reservationAll
       });
     }
   }
@@ -58,7 +60,7 @@ class Reservation {
       });
     } else {
       res.status(200).json({
-        message: "success getting reservation",
+        message: "success geting reservation",
         reservation
       });
     }
@@ -85,6 +87,22 @@ class Reservation {
       res.status(200).json({
         message: "success update reservation",
         reservation
+      });
+    }
+  }
+
+  static async deleteReservation(req, res) {
+    const { id } = req.params;
+    const reservation = await reservations.findByPk(id);
+    if (!reservation) {
+      res.status(404).json({
+        message: "reservation not found"
+      });
+    } else {
+      reservation.is_deleted = true;
+      reservation.save();
+      res.status(200).json({
+        message: "success deleting reservation"
       });
     }
   }
