@@ -30,6 +30,23 @@ class Type {
             }
         }
     }
+
+    static async readAll(req,res) {
+        console.log(req.url);
+        let typesAll = await type.findAll();
+        if (!typesAll) {
+            res.status(404).json({
+                message: "type not found"
+            });
+        } else {
+            typesAll = typesAll.filter(item => !item.is_deleted);
+            res.status(200).json({
+                message: "success getting all type",
+                typesAll
+            });
+        }
+    }
 }
+
 
 module.exports = Type;
