@@ -1,7 +1,7 @@
 "use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("Reservations", {
+    await queryInterface.createTable("reservations", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -9,7 +9,11 @@ module.exports = {
         type: Sequelize.INTEGER(5)
       },
       user_id: {
-        type: Sequelize.INTEGER(4)
+        type: Sequelize.INTEGER(4),
+        references: {
+          model: "users",
+          key: "id"
+        }
       },
       room_id: {
         type: Sequelize.INTEGER(3)
@@ -23,17 +27,17 @@ module.exports = {
       is_deleted: {
         type: Sequelize.BOOLEAN
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("Reservations");
+    await queryInterface.dropTable("reservations");
   }
 };

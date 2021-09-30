@@ -10,13 +10,21 @@ module.exports = (sequelize, DataTypes) => {
     static associate({ User }) {
       this.belongsTo(User, {
         onDelete: "RESTRICT",
-        foreignKey: "user_id"
+        onUpdate: "RESTRICT",
+        foreignKey: "user_id",
+        targetKey: "id"
       });
     }
   }
   Reservation.init(
     {
-      user_id: DataTypes.INTEGER,
+      user_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: sequelize.models.User,
+          key: "id"
+        }
+      },
       room_id: DataTypes.INTEGER,
       check_in: DataTypes.DATE,
       check_out: DataTypes.DATE,
@@ -24,7 +32,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Reservation"
+      modelName: "Reservation",
+      underscored: true
     }
   );
   return Reservation;
