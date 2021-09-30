@@ -1,13 +1,12 @@
-const mainRouter = require("./router");
+const mainRouter = require("./routes");
+
 const express = require("express");
 const app = express();
-port = 8080;
+const port = 5000;
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use(mainRouter);
 
-app.listen(port, () => {
-  console.log(`server running on port ${port}`);
-});
+app.listen(port, () => console.log(`Running server on port ${port}`));
