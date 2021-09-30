@@ -1,24 +1,3 @@
-// const model = require("../models").user;
-// const jwt = require("jsonwebtoken");
-
-// const authentication = (req,res,next) => {
-//     if (req.headers.authorization) {
-//         const token = req.headers.authorization.match(/[\w\.]+$/)[0];
-//         const payload = jwt.verify(token, "secure", (err,token) => {
-//             if (err) {
-//                 statusError.message = err.message;
-//                 statusError.code = 400;
-//                 next(statusError);
-//             }
-//             return token;
-//         });
-//         model.query(
-//             "SELECT * FROM Users WHERE "
-//         )
-//     }
-// }
-
-
 const model = require("../models").user;
 const jwt = require("jsonwebtoken");
 
@@ -30,7 +9,7 @@ const authentication = async (req,res,next) => {
         }
 
         // verify token
-        const jwtPayload = jwt.verify(token , 'login')
+        const jwtPayload = jwt.verify(token , 'secure')
 
         // check user
         const dataUser = await User.findByPk(jwtPayload.userId , { include: Role })
@@ -44,4 +23,4 @@ const authentication = async (req,res,next) => {
     }
 } 
 
-module.exports = authentication
+module.exports = authentication;
