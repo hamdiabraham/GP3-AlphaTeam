@@ -35,6 +35,7 @@ class Reservation {
   }
 
   static async readAll(req, res) {
+    const user = null;
     let reservationAll = await reservations.findAll();
     reservationAll = reservationAll
       ? reservationAll.filter(item => !item.is_deleted)
@@ -52,6 +53,7 @@ class Reservation {
   }
 
   static async readById(req, res) {
+    const user = null;
     const { id } = req.params;
     const reservation = await reservations.findByPk(id);
     if (!reservation || reservation.is_deleted) {
@@ -67,6 +69,7 @@ class Reservation {
   }
 
   static async updateReservation(req, res) {
+    const user = null;
     const { id } = req.params;
     const { roomNumber, checkIn, checkOut } = req.body;
     const reservation = await reservations.findByPk(id);
@@ -92,6 +95,7 @@ class Reservation {
   }
 
   static async deleteReservation(req, res) {
+    const user = null;
     const { id } = req.params;
     const reservation = await reservations.findByPk(id);
     if (!reservation) {
