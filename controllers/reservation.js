@@ -72,6 +72,10 @@ class Reservation {
       res.status(404).json({
         message: "reservation not found"
       });
+    } else if (!roomNumber && !checkIn && !checkOut) {
+      res.status(400).json({
+        message: "please fill roomNumber, checkIn, or checkOut"
+      });
     } else {
       reservation.room_id = roomNumber || reservation.room_id;
       reservation.check_in = checkIn || reservation.check_in;
