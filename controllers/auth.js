@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const users = require("./models").User;
+const users = require("../models").User;
 
 class Auth {
   static async login(req, res) {
