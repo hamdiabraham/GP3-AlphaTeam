@@ -7,7 +7,7 @@ class Auth {
     const { email, password } = req.body;
     if (!email || !password) {
       next({ code: 415, message: "email and password must be fill" });
-    } else if (!password.length >= 8 && !password.length <= 16) {
+    } else if (!(password.length >= 8 && password.length <= 16)) {
       next({
         code: 415,
         message: "password min 8 character and max 16 character"
