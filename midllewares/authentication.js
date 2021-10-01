@@ -1,4 +1,4 @@
-const model = require("../models").user;
+const User = require("../models").user;
 const jwt = require("jsonwebtoken");
 
 const authentication = async (req,res,next) => {
@@ -12,7 +12,7 @@ const authentication = async (req,res,next) => {
         const jwtPayload = jwt.verify(token , 'secure')
 
         // check user
-        const dataUser = await User.findByPk(jwtPayload.userId , { include: Role })
+        const dataUser = await User.findByPk(jwtPayload.Id)
         if(!dataUser) {
             throw new Error('invalid access token!')
         }
