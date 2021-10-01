@@ -93,7 +93,7 @@ class Reservation {
         message: "please fill roomNumber, checkIn, or checkOut"
       });
     } else {
-      reservation.room_id = roomNumber || reservation.room_id;
+      reservation.room_id = +roomNumber || reservation.room_id;
       reservation.check_in = checkIn || reservation.check_in;
       reservation.check_out = checkOut || reservation.check_out;
       reservation.save();
@@ -106,10 +106,10 @@ class Reservation {
   }
 
   static async deleteReservation(req, res) {
-    const user = null;
+    const user = req.currentUser;
     const { id } = req.params;
     const reservation = await reservations.findByPk(id);
-    if (!reservation) {
+    if ((!reservation || user.id !== reservation.user_id) && !user.is_guest) {
       res.status(404).json({
         message: "reservation not found"
       });
