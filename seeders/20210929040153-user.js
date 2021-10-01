@@ -13,14 +13,14 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
-    await queryInterface.bulkInsert("Users", [
+    await queryInterface.bulkInsert("users", [
       {
         name: "admin",
         email: "admin@alpha.com",
         password: bcrypt.hashSync("adminalpha", 8),
         is_guest: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        created_at: new Date(),
+        updated_at: new Date(),
       },
     ]);
   },
@@ -32,6 +32,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete("Users", null, {});
+    await queryInterface.bulkDelete("users", null, {});
   },
 };

@@ -23,7 +23,6 @@ class Auth {
           const token = jwt.sign({ id: user.id }, "secure");
           res.status(200).json({
             message: "success login",
-            user,
             token,
           });
         } else {
@@ -73,9 +72,10 @@ class Auth {
           email,
           password: bcrypt.hashSync(password),
         });
+        const token = jwt.sign({ id: user.id }, "secure");
         res.status(201).json({
           message: "success register",
-          user,
+          token,
         });
       }
     }
