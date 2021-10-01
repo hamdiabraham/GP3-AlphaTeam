@@ -2,8 +2,6 @@ const authorization = (req, res, next) => {
   try {
     const currentUser = req.currentUser;
     const endPoint = req.url;
-    console.log(endPoint);
-    console.log(currentUser.is_guest);
 
     if (
       (new RegExp("/room").test(endPoint) ||
