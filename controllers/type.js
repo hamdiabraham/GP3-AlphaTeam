@@ -87,19 +87,16 @@ class Type {
         }
     }
 
-    static async deleteType(req, res) {
-        const { id } = req.params;
-        const types = await type.findByPk(id);
-        if (!types) {
-          res.status(404).json({
-            message: "type not found"
-          });
-        } else {
-          type.is_deleted = true;
-          types.save();
-          res.status(200).json({
-            message: "success deleting type"
-          });
+    static destroyType = async (req,res,next) => {
+        let {id} = req.params
+        try {
+            let types = await type.findByPk(id)
+            types.destroy()
+            res.status(200).json({
+                message: 'deleted success'
+            })
+        } catch (error) {
+            next(error)
         }
     }
 }
