@@ -1,8 +1,10 @@
-const authorizations = (is_guest) => (err, req, res, next) => {
+const authorization = (req, res, next) => {
   try {
     const currentUser = req.currentUser;
 
-    if (!currentUser.role.includes(is_guest)) {
+    // cek apabila crud room dan crud type hanya bisa di akses oleh admin, selain itu user biasa
+    // cara
+    if (!currentUser.includes(is_guest)) {
       throw new Error("unauthorize access");
     }
     next();
@@ -11,4 +13,4 @@ const authorizations = (is_guest) => (err, req, res, next) => {
   }
 };
 
-module.exports = authorizations;
+module.exports = authorization;
