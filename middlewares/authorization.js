@@ -6,13 +6,16 @@ const authorization = (req, res, next) => {
     console.log(currentUser.is_guest);
 
     if (
-      (endPoint === "/room" ||
-        endPoint === "/type-room" ||
-        endPoint === "/reservation") &&
+      (new RegExp("/room").test(endPoint) ||
+        new RegExp("/type-room").test(endPoint) ||
+        new RegExp("/reservation").test(endPoint)) &&
       !currentUser.is_guest
     ) {
       next();
-    } else if (endPoint === "/reservation" && currentUser.is_guest) {
+    } else if (
+      new RegExp("/reservation").test(endPoint) &&
+      currentUser.is_guest
+    ) {
       next();
     } else {
       throw new Error("unauthorize access");

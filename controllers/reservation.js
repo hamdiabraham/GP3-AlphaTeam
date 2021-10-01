@@ -2,11 +2,15 @@ const reservations = require("../models").Reservation;
 
 class Reservation {
   static async makeReservation(req, res) {
-    const user = null;
+    const user = req.currentUser;
     const { roomNumber, checkIn, checkOut } = req.body;
-    if (!roomNumber || !checkIn || !checkOut) {
+    if (!user.is_guest) {
+      res.status(403).json({
+        message: "this user cannot make reservation"
+      });
+    } else if (!roomNumber || !checkIn || !checkOut) {
       res.status(400).json({
-        message: "numberRoom, checkIn, and checkOut must be fill"
+        message: "roomNumber, checkIn, and checkOut must be fill"
       });
     } else {
       const isNotEmptyRoom = await reservations.findOne({
@@ -20,11 +24,10 @@ class Reservation {
         });
       } else {
         const reservation = await reservations.create({
-          user_id: user,
+          user_id: user.id,
           room_id: +roomNumber,
           check_in: checkIn,
-          check_out: checkOut,
-          is_deleted: false
+          check_out: checkOut
         });
         res.status(201).json({
           message: "success make reservation",
@@ -35,10 +38,13 @@ class Reservation {
   }
 
   static async readAll(req, res) {
-    const user = null;
+    const user = req.currentUser;
     let reservationAll = await reservations.findAll();
     reservationAll = reservationAll
-      ? reservationAll.filter(item => !item.is_deleted)
+      ? reservationAll.filter(
+          item =>
+            (!item.is_deleted && item.user_id === user.id) || !user.is_guest
+        )
       : [];
     if (!reservationAll.length) {
       res.status(404).json({
@@ -53,10 +59,15 @@ class Reservation {
   }
 
   static async readById(req, res) {
-    const user = null;
+    const user = req.currentUser;
     const { id } = req.params;
     const reservation = await reservations.findByPk(id);
-    if (!reservation || reservation.is_deleted) {
+    if (
+      (!reservation ||
+        reservation.is_deleted ||
+        user.id !== reservation.user_id) &&
+      !user.is_guest
+    ) {
       res.status(404).json({
         message: "reservation not found"
       });
@@ -69,11 +80,11 @@ class Reservation {
   }
 
   static async updateReservation(req, res) {
-    const user = null;
+    const user = req.currentUser;
     const { id } = req.params;
     const { roomNumber, checkIn, checkOut } = req.body;
     const reservation = await reservations.findByPk(id);
-    if (!reservation) {
+    if ((!reservation || user.id !== reservation.user_id) && !user.is_guest) {
       res.status(404).json({
         message: "reservation not found"
       });
