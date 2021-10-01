@@ -1,11 +1,12 @@
 const reservations = require("../models").Reservation;
 
 class Reservation {
-  static async makeReservation(req, res) {
+  static async makeReservation(req, res, next) {
     const user = null;
     const { roomNumber, checkIn, checkOut } = req.body;
     if (!roomNumber || !checkIn || !checkOut) {
-      res.status(400).json({
+      next({
+        code: 415,
         message: "numberRoom, checkIn, and checkOut must be fill"
       });
     } else {
@@ -15,7 +16,8 @@ class Reservation {
         }
       });
       if (isNotEmptyRoom) {
-        res.status(409).json({
+        next({
+          code: 409,
           message: "this room is not empty"
         });
       } else {
@@ -41,7 +43,8 @@ class Reservation {
       ? reservationAll.filter(item => !item.is_deleted)
       : [];
     if (!reservationAll.length) {
-      res.status(404).json({
+      next({
+        code: 404,
         message: "reservations empty"
       });
     } else {
@@ -57,7 +60,8 @@ class Reservation {
     const { id } = req.params;
     const reservation = await reservations.findByPk(id);
     if (!reservation || reservation.is_deleted) {
-      res.status(404).json({
+      next({
+        code: 404,
         message: "reservation not found"
       });
     } else {
@@ -74,11 +78,13 @@ class Reservation {
     const { roomNumber, checkIn, checkOut } = req.body;
     const reservation = await reservations.findByPk(id);
     if (!reservation) {
-      res.status(404).json({
+      next({
+        code: 404,
         message: "reservation not found"
       });
     } else if (!roomNumber && !checkIn && !checkOut) {
-      res.status(400).json({
+      next({
+        code: 415,
         message: "please fill roomNumber, checkIn, or checkOut"
       });
     } else {
@@ -99,7 +105,8 @@ class Reservation {
     const { id } = req.params;
     const reservation = await reservations.findByPk(id);
     if (!reservation) {
-      res.status(404).json({
+      next({
+        code: 404,
         message: "reservation not found"
       });
     } else {

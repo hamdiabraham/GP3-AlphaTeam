@@ -32,7 +32,7 @@ class Auth {
     }
   }
 
-  static async register(req, res) {
+  static async register(req, res, next) {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
       next({ code: 415, message: "name, email, and password must be fill" });
