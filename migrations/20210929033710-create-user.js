@@ -19,6 +19,7 @@ module.exports = {
       },
       is_guest: {
         type: Sequelize.BOOLEAN,
+        defaultValue: true,
       },
       created_at: {
         allowNull: false,

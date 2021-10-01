@@ -1,7 +1,7 @@
 const rooms = require("../models").Room;
 
 class Room {
-  static async chooseRoom(req, res) {
+  static async makeRoom(req, res) {
     const { isSingleBed } = req.body;
 
     if (!isSingleBed) {
