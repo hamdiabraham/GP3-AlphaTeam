@@ -6,31 +6,31 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER(4)
+        type: Sequelize.INTEGER(4),
       },
       name: {
-        type: Sequelize.STRING(20)
+        type: Sequelize.STRING(20),
       },
       email: {
-        type: Sequelize.STRING(25)
+        type: Sequelize.STRING(25),
       },
       password: {
-        type: Sequelize.STRING(100)
+        type: Sequelize.STRING(100),
       },
       is_guest: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       created_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updated_at: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable("users");
-  }
+  },
 };
