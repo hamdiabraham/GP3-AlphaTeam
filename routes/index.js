@@ -1,6 +1,6 @@
 const authRouter = require("./auth");
 const authentication = require("../middlewares/authentication");
-
+const authorization = require("../middlewares/authorization");
 const mainRouter = require("express").Router();
 const typeRouter = require("./type");
 const reservationRouter = require("./reservation");

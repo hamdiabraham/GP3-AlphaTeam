@@ -1,16 +1,18 @@
 const reservations = require("../models").Reservation;
 
 class Reservation {
-  static async makeReservation(req, res) {
+  static async makeReservation(req, res, next) {
     const user = req.currentUser;
     const { roomNumber, checkIn, checkOut } = req.body;
     if (!user.is_guest) {
-      res.status(403).json({
+      next({
+        code: 415,
         message: "this user cannot make reservation"
       });
     } else if (!roomNumber || !checkIn || !checkOut) {
-      res.status(400).json({
-        message: "roomNumber, checkIn, and checkOut must be fill"
+      next({
+        code: 415,
+        message: "numberRoom, checkIn, and checkOut must be fill"
       });
     } else {
       const isNotEmptyRoom = await reservations.findOne({
@@ -19,7 +21,8 @@ class Reservation {
         }
       });
       if (isNotEmptyRoom) {
-        res.status(409).json({
+        next({
+          code: 409,
           message: "this room is not empty"
         });
       } else {
@@ -37,7 +40,7 @@ class Reservation {
     }
   }
 
-  static async readAll(req, res) {
+  static async readAll(req, res, next) {
     const user = req.currentUser;
     let reservationAll = await reservations.findAll();
     reservationAll = reservationAll
@@ -47,7 +50,8 @@ class Reservation {
         )
       : [];
     if (!reservationAll.length) {
-      res.status(404).json({
+      next({
+        code: 404,
         message: "reservations empty"
       });
     } else {
@@ -58,18 +62,19 @@ class Reservation {
     }
   }
 
-  static async readById(req, res) {
+  static async readById(req, res, next) {
     const user = req.currentUser;
     const { id } = req.params;
     const reservation = await reservations.findByPk(id);
     if (
-      (!reservation ||
-        reservation.is_deleted ||
-        user.id !== reservation.user_id) &&
+      !reservation ||
+      reservation.is_deleted ||
+      user.id !== reservation.user_id ||
       !user.is_guest
     ) {
-      res.status(404).json({
-        message: "reservation not found"
+      next({
+        code: 404,
+        message: "reservations not found"
       });
     } else {
       res.status(200).json({
@@ -79,17 +84,19 @@ class Reservation {
     }
   }
 
-  static async updateReservation(req, res) {
+  static async updateReservation(req, res, next) {
     const user = req.currentUser;
     const { id } = req.params;
     const { roomNumber, checkIn, checkOut } = req.body;
     const reservation = await reservations.findByPk(id);
-    if ((!reservation || user.id !== reservation.user_id) && !user.is_guest) {
-      res.status(404).json({
-        message: "reservation not found"
+    if (!reservation || user.id !== reservation.user_id || !user.is_guest) {
+      next({
+        code: 404,
+        message: "reservations not found"
       });
     } else if (!roomNumber && !checkIn && !checkOut) {
-      res.status(400).json({
+      next({
+        code: 415,
         message: "please fill roomNumber, checkIn, or checkOut"
       });
     } else {
@@ -105,13 +112,14 @@ class Reservation {
     }
   }
 
-  static async deleteReservation(req, res) {
+  static async deleteReservation(req, res, next) {
     const user = req.currentUser;
     const { id } = req.params;
     const reservation = await reservations.findByPk(id);
-    if ((!reservation || user.id !== reservation.user_id) && !user.is_guest) {
-      res.status(404).json({
-        message: "reservation not found"
+    if (!reservation || user.id !== reservation.user_id || !user.is_guest) {
+      next({
+        code: 404,
+        message: "reservations not found"
       });
     } else {
       reservation.is_deleted = true;
