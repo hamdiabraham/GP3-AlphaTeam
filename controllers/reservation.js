@@ -5,7 +5,8 @@ class Reservation {
     const user = req.currentUser;
     const { roomNumber, checkIn, checkOut } = req.body;
     if (!user.is_guest) {
-      res.status(403).json({
+      next({
+        code: 415,
         message: "this user cannot make reservation"
       });
     } else if (!roomNumber || !checkIn || !checkOut) {
