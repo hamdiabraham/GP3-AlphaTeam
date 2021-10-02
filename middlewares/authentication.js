@@ -9,7 +9,7 @@ const authentication = async (req, res, next) => {
     }
 
     // verify token
-    const jwtPayload = jwt.verify(token, "secure");
+    const jwtPayload = jwt.verify(token, process.env.SECRET_KEY_JWT);
 
     // check user
     const dataUser = await User.findByPk(jwtPayload.id);
