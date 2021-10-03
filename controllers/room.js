@@ -32,7 +32,7 @@ class Room {
     }
   }
 
-  static async readAll(req, res) {
+  static async readAll(req, res, next) {
     let roomAll = await rooms.findAll();
     if (!roomAll.length) {
       next({
@@ -47,7 +47,7 @@ class Room {
     }
   }
 
-  static async readById(req, res) {
+  static async readById(req, res, next) {
     const { id } = req.params;
     const room = await rooms.findByPk(id);
     if (!room) {
@@ -63,7 +63,7 @@ class Room {
     }
   }
 
-  static async updateRoom(req, res) {
+  static async updateRoom(req, res, next) {
     const { id } = req.params;
     const { type_room_id, is_single_bed } = req.body;
     const room = await rooms.findByPk(id);
@@ -80,7 +80,7 @@ class Room {
     } else {
       room.type_room_id = +type_room_id || room.is_single_bed;
       room.is_single_bed = is_single_bed || room.is_single_bed;
-      reservation.save();
+      room.save();
 
       res.status(200).json({
         message: "success update room",
@@ -89,16 +89,16 @@ class Room {
     }
   }
 
-  static async deleteRoom(req, res) {
+  static async deleteRoom(req, res, next) {
     const { id } = req.params;
     const room = await rooms.findByPk(id);
     if (!room) {
-      res.status(404).json({
-        message: "room not found",
+      next({
+        code: 404,
+        message: "Room not found",
       });
     } else {
-      room.is_deleted = true;
-      room.save();
+      room.destroy();
       res.status(200).json({ message: "success deleting room" });
     }
   }
