@@ -6,8 +6,8 @@ class Reservation {
     const { roomNumber, checkIn, checkOut } = req.body;
     if (!user.is_guest) {
       next({
-        code: 415,
-        message: "this user cannot make reservation"
+        code: 403,
+        message: "user admin cannot make reservation"
       });
     } else if (!roomNumber || !checkIn || !checkOut) {
       next({
@@ -20,7 +20,7 @@ class Reservation {
           room_id: +roomNumber
         }
       });
-      if (isNotEmptyRoom) {
+      if (isNotEmptyRoom && !isNotEmptyRoom.is_deleted) {
         next({
           code: 409,
           message: "this room is not empty"
@@ -67,10 +67,10 @@ class Reservation {
     const { id } = req.params;
     const reservation = await reservations.findByPk(id);
     if (
-      !reservation ||
-      reservation.is_deleted ||
-      user.id !== reservation.user_id ||
-      !user.is_guest
+      (!reservation ||
+        reservation.is_deleted ||
+        user.id !== reservation.user_id) &&
+      user.is_guest
     ) {
       next({
         code: 404,
@@ -89,7 +89,11 @@ class Reservation {
     const { id } = req.params;
     const { roomNumber, checkIn, checkOut } = req.body;
     const reservation = await reservations.findByPk(id);
-    if (!reservation || user.id !== reservation.user_id || !user.is_guest) {
+    if (
+      !reservation ||
+      (user.id !== reservation.user_id && user.is_guest) ||
+      reservation.is_deleted
+    ) {
       next({
         code: 404,
         message: "reservations not found"
@@ -116,7 +120,7 @@ class Reservation {
     const user = req.currentUser;
     const { id } = req.params;
     const reservation = await reservations.findByPk(id);
-    if (!reservation || user.id !== reservation.user_id || !user.is_guest) {
+    if (!reservation || (user.id !== reservation.user_id && user.is_guest)) {
       next({
         code: 404,
         message: "reservations not found"
