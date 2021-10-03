@@ -29,6 +29,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("r ooms");
+    await queryInterface.dropTable("rooms");
   }
 };

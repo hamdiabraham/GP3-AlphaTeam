@@ -35,7 +35,7 @@ class Type {
 
   static async readAll(req, res, next) {
     let typesAll = await type.findAll();
-    if (!typesAll) {
+    if (!typesAll.length) {
       next({
         code: 404,
         message: "type not found"
@@ -78,10 +78,10 @@ class Type {
       next({
         code: 415,
         message: "please fill includeBreakfast, typeName, or price"
-      })
+      });
     } else {
       types.is_include_breakfast =
-        is_include_breakfast || types.is_include_breakfast;
+        +is_include_breakfast === 1 || types.is_include_breakfast;
       types.type_name = type_name || types.type_name;
       types.price = price || types.price;
       types.save();
