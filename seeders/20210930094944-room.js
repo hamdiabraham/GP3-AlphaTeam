@@ -11,10 +11,10 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
-    await queryInterface.bulkInsert("rooms", [
+    await queryInterface.bulkInsert("Rooms", [
       {
         type_room_id: 1,
-        is_single_bed: "admin@alpha.com",
+        is_single_bed: true,
         created_at: new Date(),
         updated_at: new Date(),
       },

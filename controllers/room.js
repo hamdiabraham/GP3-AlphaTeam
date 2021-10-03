@@ -1,23 +1,48 @@
 const rooms = require("../models").Room;
 
 class Room {
-  static async makeRoom(req, res) {
-    const { is_single_bed } = req.body;
-    if (!is_single_bed) {
+  static async makeRoom(req, res, next) {
+    const { type_room_id, is_single_bed } = req.body;
+    if ((!type_room_id, !is_single_bed)) {
+      next({
+        code: 415,
+        message: "type room and is single bed must be fill",
+      });
+    } else {
+      const roomIsNotEmpty = await rooms.findOne({
+        where: {
+          type_room_id: type_room_id,
+        },
+      });
+      if (roomIsNotEmpty) {
+        next({
+          code: 409,
+          message: "this room is not empty",
+        });
+      } else {
+        const room = await rooms.create({
+          type_room_id: type_room_id,
+          is_single_bed: is_single_bed,
+        });
+        res.status(200).json({
+          message: "success make room",
+          room,
+        });
+      }
     }
   }
 
   static async readAll(req, res) {
     let roomAll = await rooms.findAll();
-    if (!roomAll) {
-      res.status(404).json({
-        message: "room not found",
+    if (!roomAll.length) {
+      next({
+        code: 404,
+        message: "rooms empty",
       });
     } else {
-      roomAll = roomAll.filter((item) => !item.is_deleted);
       res.status(200).json({
         message: "success getting all rooms",
-        room,
+        roomAll,
       });
     }
   }
@@ -26,8 +51,9 @@ class Room {
     const { id } = req.params;
     const room = await rooms.findByPk(id);
     if (!room) {
-      res.status(404).json({
-        message: "room not found",
+      next({
+        code: 404,
+        message: "Room not found",
       });
     } else {
       res.status(200).json({
@@ -39,18 +65,21 @@ class Room {
 
   static async updateRoom(req, res) {
     const { id } = req.params;
-    const { isSingleBed } = req.body;
+    const { type_room_id, is_single_bed } = req.body;
     const room = await rooms.findByPk(id);
     if (!room) {
-      res.status(404).json({
-        message: "room not found",
+      next({
+        code: 404,
+        message: "Room not found",
       });
-    } else if (!isSingleBed) {
-      res.status(400).json({
-        message: "please fill isSingleBed",
+    } else if ((!type_room_id, !is_single_bed)) {
+      next({
+        code: 415,
+        message: "please fill type room and is single bed",
       });
     } else {
-      room.is_single_bed = isSingleBed || room.is_single_bed;
+      room.type_room_id = +type_room_id || room.is_single_bed;
+      room.is_single_bed = is_single_bed || room.is_single_bed;
       reservation.save();
 
       res.status(200).json({
@@ -65,7 +94,7 @@ class Room {
     const room = await rooms.findByPk(id);
     if (!room) {
       res.status(404).json({
-        message: "reservation not found",
+        message: "room not found",
       });
     } else {
       room.is_deleted = true;
