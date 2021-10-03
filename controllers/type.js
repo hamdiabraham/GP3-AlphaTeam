@@ -1,10 +1,11 @@
 const type = require("../models").Type;
 
 class Type {
-  static async makeType(req, res) {
+  static async makeType(req, res, next) {
     const { is_include_breakfast, type_name, price } = req.body;
     if (!is_include_breakfast || !type_name || !price) {
-      res.status(400).json({
+      next({
+        code: 415,
         message: "is_include_breakfast, type_name, price must be fill"
       });
     } else {
@@ -14,7 +15,8 @@ class Type {
         }
       });
       if (isTypeNameExist) {
-        res.status(409).json({
+        next({
+          code: 409,
           message: "type name is exist"
         });
       } else {
@@ -31,10 +33,11 @@ class Type {
     }
   }
 
-  static async readAll(req, res) {
+  static async readAll(req, res, next) {
     let typesAll = await type.findAll();
     if (!typesAll) {
-      res.status(404).json({
+      next({
+        code: 404,
         message: "type not found"
       });
     } else {
@@ -46,11 +49,12 @@ class Type {
     }
   }
 
-  static async readById(req, res) {
+  static async readById(req, res, next) {
     const { id } = req.params;
     const types = await type.findByPk(id);
     if (!types || type.is_deleted) {
-      res.status(404).json({
+      next({
+        code: 404,
         message: "type not found"
       });
     } else {
@@ -61,18 +65,20 @@ class Type {
     }
   }
 
-  static async updateType(req, res) {
+  static async updateType(req, res, next) {
     const { id } = req.params;
     const { is_include_breakfast, type_name, price } = req.body;
     const types = await type.findByPk(id);
     if (!types) {
-      res.status(404).json({
+      next({
+        code: 404,
         message: "type not found"
       });
     } else if (!is_include_breakfast && !type_name && !price) {
-      res.status(400).json({
+      next({
+        code: 415,
         message: "please fill includeBreakfast, typeName, or price"
-      });
+      })
     } else {
       types.is_include_breakfast =
         is_include_breakfast || types.is_include_breakfast;
