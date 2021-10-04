@@ -9,14 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({ User, Room }) {
       this.belongsTo(User, {
-        onDelete: "RESTRICT",
-        onUpdate: "RESTRICT",
         foreignKey: "user_id",
         targetKey: "id"
       });
       this.belongsTo(Room, {
-        onDelete: "RESTRICT",
-        onUpdate: "RESTRICT",
         foreignKey: "room_id",
         targetKey: "id"
       });
