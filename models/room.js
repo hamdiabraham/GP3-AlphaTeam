@@ -7,13 +7,26 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      // define association here
+    static associate({ Reservation, Type }) {
+      this.hasOne(Reservation, {
+        foreignKey: "room_id",
+        sourceKey: "id"
+      });
+      this.belongsTo(Type, {
+        foreignKey: "type_room_id",
+        targetKey: "id"
+      });
     }
   }
   Room.init(
     {
-      type_room_id: DataTypes.INTEGER,
+      type_room_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: sequelize.models.Type,
+          key: "id"
+        }
+      },
       is_single_bed: DataTypes.BOOLEAN
     },
     {
